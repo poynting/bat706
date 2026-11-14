@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>bat706 3D viewer</title>
+<style>
+  :root { --bg:#14181d; --panel:#1d232a; --line:#2c343d; --fg:#dde3ea; --dim:#8a96a3; --acc:#e0a040; }
+  * { box-sizing: border-box; }
+  html, body { margin:0; height:100%; background:var(--bg); color:var(--fg); font:13px/1.4 system-ui, sans-serif; }
+  #app { display:grid; grid-template-columns: 280px 1fr; height:100%; }
+  aside { background:var(--panel); border-right:1px solid var(--line); padding:14px; overflow:auto; }
+  h1 { font-size:15px; margin:0 0 2px; } .sub { color:var(--dim); margin-bottom:12px; }
+  .tabs { display:flex; gap:6px; margin-bottom:10px; }
+  .tabs button { flex:1; padding:7px; background:#262d35; color:var(--fg); border:1px solid var(--line); border-radius:6px; cursor:pointer; font-weight:600; }
+  .tabs button.on { background:var(--acc); color:#111; border-color:var(--acc); }
+  .title { color:var(--acc); font-weight:600; margin:4px 0 10px; }
+  .sec { margin:14px 0 6px; color:var(--dim); text-transform:uppercase; font-size:11px; letter-spacing:.06em; }
+  label.row { display:flex; align-items:center; gap:8px; padding:3px 0; cursor:pointer; }
+  .sw { width:12px; height:12px; border-radius:3px; flex:none; }
+  .solo { margin-left:auto; color:var(--dim); font-size:11px; cursor:pointer; padding:0 4px; }
+  .solo:hover { color:var(--acc); }
+  input[type=range] { width:100%; }
+  .btns { display:flex; flex-wrap:wrap; gap:6px; }
+  .btns button { padding:5px 8px; background:#262d35; color:var(--fg); border:1px solid var(--line); border-radius:5px; cursor:pointer; }
+  .btns button:hover { border-color:var(--acc); }
+  select { background:#262d35; color:var(--fg); border:1px solid var(--line); border-radius:5px; padding:3px; }
+  #view { position:relative; }
+  #hud { position:absolute; left:12px; bottom:10px; color:var(--dim); pointer-events:none; }
+  #dims { position:absolute; right:12px; top:10px; background:#000a; padding:6px 10px; border-radius:6px; }
+</style>
+</head>
+<body>
+<div id="app">
+  <aside>
+    <h1>bat706 battery case</h1>
+    <div class="sub">4S LiFePO4 for IC-706MKII</div>
+    <div class="tabs" id="tabs"></div>
+    <div class="title" id="vtitle"></div>
+
+    <div class="sec">Parts <span style="float:right"><a href="#" id="all" style="color:var(--dim)">all</a> · <a href="#" id="printed" style="color:var(--dim)">printed only</a></span></div>
+    <div id="list"></div>
+
+    <div class="sec">Explode</div>
+    <input type="range" id="explode" min="0" max="2.5" step="0.01" value="0">
+
+    <div class="sec">Section cut</div>
+    <div style="display:flex;gap:8px;align-items:center;margin-bottom:4px">
+      <select id="axis"><option value="off">off</option><option value="x">X (across)</option><option value="y">Y (along)</option><option value="z">Z (height)</option></select>
+      <label><input type="checkbox" id="flip"> flip</label>
+    </div>
+    <input type="range" id="cut" min="-1" max="1" step="0.002" value="0">
+
+    <div class="sec">View</div>
+    <div class="btns">
+      <button data-cam="iso">Iso</button><button data-cam="top">Top</button><button data-cam="front">Front</button>
+      <button data-cam="side">Side</button><button data-cam="under">Under</button>
+    </div>
+    <div class="sec">Display</div>
+    <label class="row"><input type="checkbox" id="wire"> edges</label>
+    <label class="row"><input type="checkbox" id="xray"> x-ray lid</label>
+    <div class="sub" style="margin-top:14px">Drag rotate · right-drag pan · wheel zoom. Front (+Y) is where the Powerpoles exit.</div>
+  </aside>
+  <div id="view"><div id="dims"></div><div id="hud">mm, Z up</div></div>
+</div>
+
+<script type="importmap">
+{ "imports": { "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+               "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/" } }
+</script>
+<script type="module">
+import * as THREE from "three";
+import { OrbitControls } from "three/addons/controls/OrbitControls.js";
+
+const DATA = /*__DATA__*/null;
+const view = document.getElementById("view");
+if (!DATA) {
+  view.innerHTML = '<div style="padding:40px;font-size:16px;line-height:1.6">This is the <b>template</b> (no model data).<br>' +
+    'Open <a style="color:#e0a040" href="index.html">index.html</a> instead, or rebuild it with ' +
+    '<code>python viewer/build_viewer.py</code>.</div>';
+  throw new Error("template.html opened directly; open index.html");
+}
+const renderer = new THREE.WebGLRenderer({ antialias: true });
+renderer.setPixelRatio(devicePixelRatio);
+renderer.localClippingEnabled = true;
+view.appendChild(renderer.domElement);
+const scene = new THREE.Scene();
+scene.background = new THREE.Color(0x14181d);
+const camera = new THREE.PerspectiveCamera(35, 1, 1, 5000);
+camera.up.set(0, 0, 1);
+const controls = new OrbitControls(camera, renderer.domElement);
+controls.enableDamping = true;
+scene.add(new THREE.HemisphereLight(0xffffff, 0x334455, 1.2));
+const sun = new THREE.DirectionalLight(0xffffff, 1.6); sun.position.set(150, -250, 400); scene.add(sun);
+const fill = new THREE.DirectionalLight(0xffffff, 0.5); fill.position.set(-200, 200, 100); scene.add(fill);
+const grid = new THREE.GridHelper(400, 40, 0x334050, 0x222a33); grid.rotation.x = Math.PI / 2; grid.position.z = -0.1; scene.add(grid);
+
+const plane = new THREE.Plane(new THREE.Vector3(1, 0, 0), 0);
+const b64 = (s, T) => { const bin = atob(s), u8 = new Uint8Array(bin.length); for (let i = 0; i < bin.length; i++) u8[i] = bin.charCodeAt(i); return new T(u8.buffer); };
+
+const groups = {};
+for (const [v, d] of Object.entries(DATA)) {
+  const g = new THREE.Group(); g.visible = false; scene.add(g);
+  d.objs = d.items.map(it => {
+    const geo = new THREE.BufferGeometry();
+    geo.setAttribute("position", new THREE.BufferAttribute(b64(it.p, Float32Array), 3));
+    geo.setIndex(new THREE.BufferAttribute(b64(it.i, Uint32Array), 1));
+    geo.computeVertexNormals();
+    const mat = new THREE.MeshStandardMaterial({ color: it.color, metalness: 0.05, roughness: 0.65, flatShading: true,
+      side: THREE.DoubleSide, clippingPlanes: [], transparent: it.opacity < 1, opacity: it.opacity });
+    const mesh = new THREE.Mesh(geo, mat);
+    const edges = new THREE.LineSegments(new THREE.EdgesGeometry(geo, 25), new THREE.LineBasicMaterial({ color: 0x111111, clippingPlanes: [] }));
+    edges.visible = false; mesh.add(edges);
+    g.add(mesh);
+    return { it, mesh, edges, mat };
+  });
+  groups[v] = g;
+}
+
+let cur = "C";
+const listEl = document.getElementById("list");
+function buildList() {
+  const d = DATA[cur]; listEl.innerHTML = "";
+  // collapse cells/tabs into single toggles to keep the list short
+  const keys = [];
+  d.objs.forEach(o => { const k = o.it.name.startsWith("tab") ? "cell tabs" : o.it.name.startsWith("cell") ? "cells" : o.it.name;
+    o.key = k; if (!keys.includes(k)) keys.push(k); });
+  for (const k of keys) {
+    const os = d.objs.filter(o => o.key === k);
+    const row = document.createElement("label"); row.className = "row";
+    const cb = document.createElement("input"); cb.type = "checkbox"; cb.checked = os[0].mesh.visible;
+    cb.onchange = () => { os.forEach(o => o.mesh.visible = cb.checked); updateDims(); };
+    const sw = document.createElement("span"); sw.className = "sw"; sw.style.background = os[0].it.color;
+    const tx = document.createElement("span"); tx.textContent = k + (os[0].it.kind === "dummy" ? "" : " ▣");
+    tx.title = os[0].it.kind === "dummy" ? "purchased part (dummy)" : "printed part";
+    const solo = document.createElement("span"); solo.className = "solo"; solo.textContent = "solo";
+    solo.onclick = e => { e.preventDefault(); d.objs.forEach(o => o.mesh.visible = o.key === k); buildList(); frame(); };
+    row.append(cb, sw, tx, solo); listEl.append(row);
+  }
+}
+function setVariant(v) {
+  cur = v; for (const [k, g] of Object.entries(groups)) g.visible = k === v;
+  document.querySelectorAll(".tabs button").forEach(b => b.classList.toggle("on", b.dataset.v === v));
+  document.getElementById("vtitle").textContent = DATA[v].title;
+  buildList(); applyExplode(); applyCut(); applyDisplay(); updateDims();
+}
+function applyExplode() {
+  const f = +document.getElementById("explode").value;
+  for (const d of Object.values(DATA)) d.objs.forEach(o => o.mesh.position.z = o.it.explode * f);
+  updateDims();
+}
+function visibleBox() {
+  const box = new THREE.Box3();
+  DATA[cur].objs.forEach(o => { if (o.mesh.visible) box.expandByObject(o.mesh); });
+  return box;
+}
+function updateDims() {
+  const b = visibleBox(); if (b.isEmpty()) { document.getElementById("dims").textContent = ""; return; }
+  const s = b.getSize(new THREE.Vector3());
+  document.getElementById("dims").textContent = `visible: ${s.x.toFixed(1)} × ${s.y.toFixed(1)} × ${s.z.toFixed(1)} mm`;
+}
+function applyCut() {
+  const ax = document.getElementById("axis").value, flip = document.getElementById("flip").checked;
+  const on = ax !== "off";
+  for (const d of Object.values(DATA)) d.objs.forEach(o => { o.mat.clippingPlanes = on ? [plane] : []; o.edges.material.clippingPlanes = on ? [plane] : []; o.mat.needsUpdate = true; });
+  if (!on) return;
+  const b = new THREE.Box3(); DATA[cur].objs.forEach(o => b.expandByObject(o.mesh));
+  const i = { x: 0, y: 1, z: 2 }[ax], lo = b.min.getComponent(i), hi = b.max.getComponent(i);
+  const t = (+document.getElementById("cut").value + 1) / 2, pos = lo + (hi - lo) * t;
+  const n = new THREE.Vector3(); n.setComponent(i, flip ? 1 : -1);
+  plane.normal.copy(n); plane.constant = flip ? -pos : pos;
+}
+function applyDisplay() {
+  const w = document.getElementById("wire").checked, x = document.getElementById("xray").checked;
+  for (const d of Object.values(DATA)) d.objs.forEach(o => {
+    o.edges.visible = w;
+    if (o.it.name === "lid") { o.mat.transparent = x; o.mat.opacity = x ? 0.25 : 1; o.mat.depthWrite = !x; o.mat.needsUpdate = true; }
+  });
+}
+function frame(dir) {
+  const b = visibleBox(); if (b.isEmpty()) return;
+  const c = b.getCenter(new THREE.Vector3()), r = b.getSize(new THREE.Vector3()).length() * 0.5;
+  const dirs = { iso: [0.9, -1.3, 1.0], top: [0, -0.001, 1], front: [0, 1, 0.12], side: [1, 0, 0.12], under: [0.4, -0.6, -1] };
+  const v = new THREE.Vector3(...(dirs[dir] || dirs.iso)).normalize().multiplyScalar(r / Math.sin(THREE.MathUtils.degToRad(camera.fov / 2)) * 0.9);
+  camera.position.copy(c).add(v); controls.target.copy(c); controls.update();
+}
+
+for (const v of Object.keys(DATA)) { const b = document.createElement("button"); b.dataset.v = v; b.textContent = "Variant " + v;
+  b.onclick = () => setVariant(v); document.getElementById("tabs").append(b); }
+document.getElementById("explode").oninput = applyExplode;
+["axis", "flip", "cut"].forEach(id => document.getElementById(id).oninput = applyCut);
+["wire", "xray"].forEach(id => document.getElementById(id).oninput = applyDisplay);
+document.querySelectorAll("[data-cam]").forEach(b => b.onclick = () => frame(b.dataset.cam));
+document.getElementById("all").onclick = e => { e.preventDefault(); DATA[cur].objs.forEach(o => o.mesh.visible = true); buildList(); updateDims(); };
+document.getElementById("printed").onclick = e => { e.preventDefault(); DATA[cur].objs.forEach(o => o.mesh.visible = o.it.kind !== "dummy"); buildList(); updateDims(); };
+
+function resize() { const w = view.clientWidth, h = view.clientHeight; renderer.setSize(w, h); camera.aspect = w / h; camera.updateProjectionMatrix(); }
+addEventListener("resize", resize); resize();
+setVariant("C"); frame("iso");
+renderer.setAnimationLoop(() => { controls.update(); renderer.render(scene, camera); });
+</script>
+</body>
+</html>

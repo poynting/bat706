@@ -1,0 +1,99 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1150" height="820" viewBox="0 0 1150 820">
+<rect width="1150" height="820" fill="white"/>
+<text x="575.0" y="34" font-size="20" fill="#111" text-anchor="middle" font-weight="bold" font-family="DejaVu Sans, Arial">4S LiFePO4 pack — 12.8 V nominal / 14.6 V full — 15 Ah (192 Wh)</text>
+<polyline points="300,500 300,553.0" fill="none" stroke="#111" stroke-width="4" stroke-linejoin="round"/>
+<polyline points="274,553.0 326,553.0" fill="none" stroke="#111" stroke-width="3" stroke-linejoin="round"/>
+<polyline points="286,567.0 314,567.0" fill="none" stroke="#111" stroke-width="6" stroke-linejoin="round"/>
+<polyline points="300,567.0 300,620" fill="none" stroke="#111" stroke-width="4" stroke-linejoin="round"/>
+<text x="334" y="548.0" font-size="14" fill="#666" text-anchor="start" font-weight="normal" font-family="DejaVu Sans, Arial">+</text>
+<text x="334" y="562.0" font-size="16" fill="#111" text-anchor="start" font-weight="bold" font-family="DejaVu Sans, Arial">C1</text>
+<text x="334" y="579.0" font-size="12" fill="#666" text-anchor="start" font-weight="normal" font-family="DejaVu Sans, Arial">3.2 V 15 Ah</text>
+<polyline points="300,380 300,433.0" fill="none" stroke="#111" stroke-width="4" stroke-linejoin="round"/>
+<polyline points="274,433.0 326,433.0" fill="none" stroke="#111" stroke-width="3" stroke-linejoin="round"/>
+<polyline points="286,447.0 314,447.0" fill="none" stroke="#111" stroke-width="6" stroke-linejoin="round"/>
+<polyline points="300,447.0 300,500" fill="none" stroke="#111" stroke-width="4" stroke-linejoin="round"/>
+<text x="334" y="428.0" font-size="14" fill="#666" text-anchor="start" font-weight="normal" font-family="DejaVu Sans, Arial">+</text>
+<text x="334" y="442.0" font-size="16" fill="#111" text-anchor="start" font-weight="bold" font-family="DejaVu Sans, Arial">C2</text>
+<text x="334" y="459.0" font-size="12" fill="#666" text-anchor="start" font-weight="normal" font-family="DejaVu Sans, Arial">3.2 V 15 Ah</text>
+<polyline points="300,260 300,313.0" fill="none" stroke="#111" stroke-width="4" stroke-linejoin="round"/>
+<polyline points="274,313.0 326,313.0" fill="none" stroke="#111" stroke-width="3" stroke-linejoin="round"/>
+<polyline points="286,327.0 314,327.0" fill="none" stroke="#111" stroke-width="6" stroke-linejoin="round"/>
+<polyline points="300,327.0 300,380" fill="none" stroke="#111" stroke-width="4" stroke-linejoin="round"/>
+<text x="334" y="308.0" font-size="14" fill="#666" text-anchor="start" font-weight="normal" font-family="DejaVu Sans, Arial">+</text>
+<text x="334" y="322.0" font-size="16" fill="#111" text-anchor="start" font-weight="bold" font-family="DejaVu Sans, Arial">C3</text>
+<text x="334" y="339.0" font-size="12" fill="#666" text-anchor="start" font-weight="normal" font-family="DejaVu Sans, Arial">3.2 V 15 Ah</text>
+<polyline points="300,140 300,193.0" fill="none" stroke="#111" stroke-width="4" stroke-linejoin="round"/>
+<polyline points="274,193.0 326,193.0" fill="none" stroke="#111" stroke-width="3" stroke-linejoin="round"/>
+<polyline points="286,207.0 314,207.0" fill="none" stroke="#111" stroke-width="6" stroke-linejoin="round"/>
+<polyline points="300,207.0 300,260" fill="none" stroke="#111" stroke-width="4" stroke-linejoin="round"/>
+<text x="334" y="188.0" font-size="14" fill="#666" text-anchor="start" font-weight="normal" font-family="DejaVu Sans, Arial">+</text>
+<text x="334" y="202.0" font-size="16" fill="#111" text-anchor="start" font-weight="bold" font-family="DejaVu Sans, Arial">C4</text>
+<text x="334" y="219.0" font-size="12" fill="#666" text-anchor="start" font-weight="normal" font-family="DejaVu Sans, Arial">3.2 V 15 Ah</text>
+<circle cx="300" cy="620" r="4.5" fill="#111" stroke="#111" stroke-width="2"/>
+<text x="286" y="625" font-size="13" fill="#666" text-anchor="end" font-weight="normal" font-family="DejaVu Sans, Arial">C1 −  (FRONT bay)</text>
+<circle cx="300" cy="500" r="4.5" fill="#111" stroke="#111" stroke-width="2"/>
+<text x="286" y="505" font-size="13" fill="#666" text-anchor="end" font-weight="normal" font-family="DejaVu Sans, Arial">C1+ → C2−  (BACK bay)</text>
+<circle cx="300" cy="380" r="4.5" fill="#111" stroke="#111" stroke-width="2"/>
+<text x="286" y="385" font-size="13" fill="#666" text-anchor="end" font-weight="normal" font-family="DejaVu Sans, Arial">C2+ → C3−  (FRONT bay)</text>
+<circle cx="300" cy="260" r="4.5" fill="#111" stroke="#111" stroke-width="2"/>
+<text x="286" y="265" font-size="13" fill="#666" text-anchor="end" font-weight="normal" font-family="DejaVu Sans, Arial">C3+ → C4−  (BACK bay)</text>
+<circle cx="300" cy="140" r="4.5" fill="#111" stroke="#111" stroke-width="2"/>
+<text x="286" y="145" font-size="13" fill="#666" text-anchor="end" font-weight="normal" font-family="DejaVu Sans, Arial">C4 +  (FRONT bay)</text>
+<text x="286" y="644" font-size="12" fill="#666" text-anchor="end" font-weight="normal" font-family="DejaVu Sans, Arial">12 AWG series links</text>
+<rect x="560" y="110" width="260" height="550" rx="10" fill="#eef6ee" stroke="#2e7d32" stroke-width="2.5"/>
+<text x="690.0" y="330" font-size="15" fill="#2e7d32" text-anchor="middle" font-weight="bold" font-family="DejaVu Sans, Arial">BMS</text>
+<text x="690.0" y="348" font-size="15" fill="#2e7d32" text-anchor="middle" font-weight="bold" font-family="DejaVu Sans, Arial">3S–20S, 30 A</text>
+<text x="690.0" y="366" font-size="15" fill="#2e7d32" text-anchor="middle" font-weight="bold" font-family="DejaVu Sans, Arial">common port</text>
+<text x="690.0" y="384" font-size="15" fill="#2e7d32" text-anchor="middle" font-weight="bold" font-family="DejaVu Sans, Arial"></text>
+<text x="690.0" y="402" font-size="15" fill="#2e7d32" text-anchor="middle" font-weight="bold" font-family="DejaVu Sans, Arial">configure:</text>
+<text x="690.0" y="420" font-size="15" fill="#2e7d32" text-anchor="middle" font-weight="bold" font-family="DejaVu Sans, Arial">LiFePO4, 4S</text>
+<rect x="554" y="118" width="34" height="524" fill="white" stroke="#111" stroke-width="1.5"/>
+<text x="571" y="110" font-size="11" fill="#666" text-anchor="middle" font-weight="normal" font-family="DejaVu Sans, Arial">balance plug</text>
+<polyline points="300,620 554,620" fill="none" stroke="#111" stroke-width="2" stroke-linejoin="round"/>
+<text x="571" y="625" font-size="12" fill="#111" text-anchor="middle" font-weight="bold" font-family="DejaVu Sans, Arial">B0</text>
+<polyline points="300,500 554,500" fill="none" stroke="#c0392b" stroke-width="2" stroke-linejoin="round"/>
+<text x="571" y="505" font-size="12" fill="#111" text-anchor="middle" font-weight="bold" font-family="DejaVu Sans, Arial">B1</text>
+<polyline points="300,380 554,380" fill="none" stroke="#c0392b" stroke-width="2" stroke-linejoin="round"/>
+<text x="571" y="385" font-size="12" fill="#111" text-anchor="middle" font-weight="bold" font-family="DejaVu Sans, Arial">B2</text>
+<polyline points="300,260 554,260" fill="none" stroke="#c0392b" stroke-width="2" stroke-linejoin="round"/>
+<text x="571" y="265" font-size="12" fill="#111" text-anchor="middle" font-weight="bold" font-family="DejaVu Sans, Arial">B3</text>
+<polyline points="300,140 554,140" fill="none" stroke="#c0392b" stroke-width="2" stroke-linejoin="round"/>
+<text x="571" y="145" font-size="12" fill="#111" text-anchor="middle" font-weight="bold" font-family="DejaVu Sans, Arial">B4</text>
+<text x="430.0" y="132" font-size="12" fill="#c0392b" text-anchor="middle" font-weight="normal" font-family="DejaVu Sans, Arial">balance harness, 22 AWG</text>
+<text x="546" y="614" font-size="11" fill="#666" text-anchor="end" font-weight="normal" font-family="DejaVu Sans, Arial">0 V</text>
+<text x="546" y="494" font-size="11" fill="#666" text-anchor="end" font-weight="normal" font-family="DejaVu Sans, Arial">3.2 V</text>
+<text x="546" y="374" font-size="11" fill="#666" text-anchor="end" font-weight="normal" font-family="DejaVu Sans, Arial">6.4 V</text>
+<text x="546" y="254" font-size="11" fill="#666" text-anchor="end" font-weight="normal" font-family="DejaVu Sans, Arial">9.6 V</text>
+<text x="546" y="134" font-size="11" fill="#666" text-anchor="end" font-weight="normal" font-family="DejaVu Sans, Arial">12.8 V</text>
+<rect x="606" y="656" width="28" height="10" fill="#111"/>
+<text x="620" y="648" font-size="13" fill="#111" text-anchor="middle" font-weight="bold" font-family="DejaVu Sans, Arial">B−</text>
+<rect x="746" y="656" width="28" height="10" fill="#111"/>
+<text x="760" y="648" font-size="13" fill="#111" text-anchor="middle" font-weight="bold" font-family="DejaVu Sans, Arial">P− / C−</text>
+<polyline points="300,620 300,720 620,720 620,666" fill="none" stroke="#111" stroke-width="6" stroke-linejoin="round"/>
+<text x="460.0" y="740" font-size="12" fill="#111" text-anchor="middle" font-weight="normal" font-family="DejaVu Sans, Arial">12 AWG  pack B− → BMS B−</text>
+<polyline points="760,666 760,760 1000,760" fill="none" stroke="#111" stroke-width="6" stroke-linejoin="round"/>
+<circle cx="1000" cy="760" r="7" fill="white" stroke="#111" stroke-width="2"/>
+<text x="1014" y="755" font-size="13" fill="#111" text-anchor="start" font-weight="normal" font-family="DejaVu Sans, Arial">P−  black 12 AWG</text>
+<text x="1014" y="771" font-size="13" fill="#111" text-anchor="start" font-weight="normal" font-family="DejaVu Sans, Arial">Powerpole (front)</text>
+<polyline points="300,140 300,70 880,70" fill="none" stroke="#111" stroke-width="6" stroke-linejoin="round"/>
+<rect x="880" y="58" width="70" height="24" rx="4" fill="white" stroke="#111" stroke-width="2.5"/>
+<polyline points="880,70 950,70" fill="none" stroke="#111" stroke-width="1.5" stroke-linejoin="round"/>
+<text x="915" y="50" font-size="13" fill="#111" text-anchor="middle" font-weight="bold" font-family="DejaVu Sans, Arial">F1  30 A</text>
+<text x="915" y="100" font-size="11" fill="#666" text-anchor="middle" font-weight="normal" font-family="DejaVu Sans, Arial">in-line ATM mini fuse,</text>
+<text x="915" y="114" font-size="11" fill="#666" text-anchor="middle" font-weight="normal" font-family="DejaVu Sans, Arial">in the pocket over C4</text>
+<polyline points="950,70 1000,70" fill="none" stroke="#111" stroke-width="6" stroke-linejoin="round"/>
+<circle cx="1000" cy="70" r="7" fill="white" stroke="#111" stroke-width="2"/>
+<text x="1014" y="66" font-size="13" fill="#111" text-anchor="start" font-weight="normal" font-family="DejaVu Sans, Arial">P+  red 12 AWG</text>
+<text x="1014" y="82" font-size="13" fill="#111" text-anchor="start" font-weight="normal" font-family="DejaVu Sans, Arial">Powerpole (front)</text>
+<polyline points="820,560 900,560" fill="none" stroke="#111" stroke-width="2" stroke-linejoin="round" stroke-dasharray="6,4"/>
+<text x="906" y="556" font-size="12" fill="#666" text-anchor="start" font-weight="normal" font-family="DejaVu Sans, Arial">NTC probe (if fitted):</text>
+<text x="906" y="571" font-size="12" fill="#666" text-anchor="start" font-weight="normal" font-family="DejaVu Sans, Arial">tape to C2/C3 body</text>
+<rect x="1000" y="300" width="130" height="200" rx="8" fill="#f6f6f6" stroke="#666" stroke-dasharray="5,4"/>
+<text x="1065" y="390" font-size="13" fill="#666" text-anchor="middle" font-weight="normal" font-family="DejaVu Sans, Arial">Radio (load)</text>
+<text x="1065" y="406" font-size="13" fill="#666" text-anchor="middle" font-weight="normal" font-family="DejaVu Sans, Arial">and charger</text>
+<text x="1065" y="422" font-size="13" fill="#666" text-anchor="middle" font-weight="normal" font-family="DejaVu Sans, Arial">both on P+/P−</text>
+<polyline points="1000,77 1000,300" fill="none" stroke="#666" stroke-width="1.5" stroke-linejoin="round" stroke-dasharray="4,4"/>
+<polyline points="1000,500 1000,753" fill="none" stroke="#666" stroke-width="1.5" stroke-linejoin="round" stroke-dasharray="4,4"/>
+<text x="40" y="790" font-size="12" fill="#666" text-anchor="start" font-weight="normal" font-family="DejaVu Sans, Arial">Charge CC/CV 14.2–14.6 V, ≤ 7.5 A typ. (0.5 C).  BMS switches the negative side: never connect a load between P+ and B− (that bypasses protection).</text>
+<text x="40" y="808" font-size="12" fill="#666" text-anchor="start" font-weight="normal" font-family="DejaVu Sans, Arial">Fit balance plug LAST, after measuring the voltage steps above on the plug pins.  Unused balance wires on a 3S–20S harness: follow the BMS manual (do not leave bare ends loose).</text>
+</svg>

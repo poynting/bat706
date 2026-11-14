@@ -1,0 +1,10 @@
+# Verified 2026-11-01 on Python 3.10: full variant C pipeline, 52/52 checks clean.
+cadquery==2.7.0
+trimesh==5.2.0
+networkx==3.4.2    # trimesh needs it for cross-sections (render_c.py comparison)
+shapely==2.1.2
+rtree==1.4.1
+numpy==2.2.6
+scipy==1.15.3
+matplotlib==3.10.9
+CairoSVG==2.9.1
