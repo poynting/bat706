@@ -10,9 +10,6 @@
   #app { display:grid; grid-template-columns: 280px 1fr; height:100%; }
   aside { background:var(--panel); border-right:1px solid var(--line); padding:14px; overflow:auto; }
   h1 { font-size:15px; margin:0 0 2px; } .sub { color:var(--dim); margin-bottom:12px; }
-  .tabs { display:flex; gap:6px; margin-bottom:10px; }
-  .tabs button { flex:1; padding:7px; background:#262d35; color:var(--fg); border:1px solid var(--line); border-radius:6px; cursor:pointer; font-weight:600; }
-  .tabs button.on { background:var(--acc); color:#111; border-color:var(--acc); }
   .title { color:var(--acc); font-weight:600; margin:4px 0 10px; }
   .sec { margin:14px 0 6px; color:var(--dim); text-transform:uppercase; font-size:11px; letter-spacing:.06em; }
   label.row { display:flex; align-items:center; gap:8px; padding:3px 0; cursor:pointer; }
@@ -34,7 +31,6 @@
   <aside>
     <h1>bat706 battery case</h1>
     <div class="sub">4S LiFePO4 for IC-706MKII</div>
-    <div class="tabs" id="tabs"></div>
     <div class="title" id="vtitle"></div>
 
     <div class="sec">Parts <span style="float:right"><a href="#" id="all" style="color:var(--dim)">all</a> · <a href="#" id="printed" style="color:var(--dim)">printed only</a></span></div>
@@ -139,7 +135,6 @@ function buildList() {
 }
 function setVariant(v) {
   cur = v; for (const [k, g] of Object.entries(groups)) g.visible = k === v;
-  document.querySelectorAll(".tabs button").forEach(b => b.classList.toggle("on", b.dataset.v === v));
   document.getElementById("vtitle").textContent = DATA[v].title;
   buildList(); applyExplode(); applyCut(); applyDisplay(); updateDims();
 }
@@ -184,8 +179,6 @@ function frame(dir) {
   camera.position.copy(c).add(v); controls.target.copy(c); controls.update();
 }
 
-for (const v of Object.keys(DATA)) { const b = document.createElement("button"); b.dataset.v = v; b.textContent = "Variant " + v;
-  b.onclick = () => setVariant(v); document.getElementById("tabs").append(b); }
 document.getElementById("explode").oninput = applyExplode;
 ["axis", "flip", "cut"].forEach(id => document.getElementById(id).oninput = applyCut);
 ["wire", "xray"].forEach(id => document.getElementById(id).oninput = applyDisplay);
@@ -195,7 +188,7 @@ document.getElementById("printed").onclick = e => { e.preventDefault(); DATA[cur
 
 function resize() { const w = view.clientWidth, h = view.clientHeight; renderer.setSize(w, h); camera.aspect = w / h; camera.updateProjectionMatrix(); }
 addEventListener("resize", resize); resize();
-setVariant("C"); frame("iso");
+setVariant(Object.keys(DATA)[0]); frame("iso");
 renderer.setAnimationLoop(() => { controls.update(); renderer.render(scene, camera); });
 </script>
 </body>

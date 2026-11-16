@@ -1,7 +1,7 @@
-# Verified 2026-11-01 on Python 3.10: full variant C pipeline, 52/52 checks clean.
+# Verified 2026-11-13 on Python 3.10: full pipeline (cad/case.py, render.py, details.py, lid_drawing.py, viewer), 61/61 checks clean.
 cadquery==2.7.0
 trimesh==5.2.0
-networkx==3.4.2    # trimesh needs it for cross-sections (render_c.py comparison)
+networkx==3.4.2    # trimesh needs it for cross-sections (render.py, details.py, lid_drawing.py)
 shapely==2.1.2
 rtree==1.4.1
 numpy==2.2.6
