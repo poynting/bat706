@@ -21,8 +21,9 @@ It shows the printed parts with the dummy cells, BMS, Powerpoles, leads, screws,
 - **Views:** iso, top, front, side and under.
 - **X-ray lid:** see inside with the lid on.
 - **Live dimensions:** the size of whatever is visible.
+- **Downloads:** every printable STL, and the [printable BOM](https://poynting.github.io/bat706/bom.html).
 
-The same page is in the repo as [`viewer/index.html`](viewer/index.html). It's self-contained, but it needs internet once to load three.js. GitHub Actions (`.github/workflows/pages.yml`) republishes the committed file on every push to `main`. CI only copies the file, so rebuild it locally before you push (see [Regenerating](#regenerating)).
+The same page is in the repo as [`viewer/index.html`](viewer/index.html). It's self-contained, but it needs internet once to load three.js. GitHub Actions (`.github/workflows/pages.yml`) republishes it on every push to `main`, together with the STLs from `cad/out/` and a page rendered from `BOM.md`. CI only copies the viewer and STLs, so rebuild them locally before you push (see [Regenerating](#regenerating)).
 
 ## Schematic
 
@@ -148,20 +149,11 @@ It also reports:
   - `nut_plug_x6`: print six, on their side.
 - **Not done yet:** fillets on the internal joints (rib-to-lid, rib-to-ridge, spars, bosses), to spread the stress at the current 90° corners.
 
-## BOM (besides cells and BMS)
+## BOM
 
-- **Powerpoles:** 1 red and 1 black Anderson Powerpole housing for the output, with PP45 (10–14 AWG) or PP30 (12–16 AWG) contacts. Bond them "red right, tongue top" viewed from the mating face.
-- **Inline disconnects:** 2 single Powerpole pairs (4 housings, same contacts). One joins C4+ to the red output lead, the other joins C1− to BMS B−.
-- **Fuse:** inline ATM mini fuse holder for 12 AWG, with a **30 A** fuse.
-- **Wire:**
-  - 12 AWG silicone, red and black, about 0.5 m each.
-  - 22 AWG for the balance leads.
-- **Fasteners:** 12 × M3×10 countersunk (ISO 10642), 4 × M3×5 button head (ISO 7380), 6 × M3 nuts (ISO 4032), 6 × M3 heat-set inserts.
-- **Foam:**
-  - 1 mm foam tape for the seats.
-  - 2–3 mm closed-cell EVA or neoprene for the 8 base-stop pads.
-  - A closed-cell block for each end (front about 139 × 9 × 27 mm, back about 139 × 8 × 27 mm). Cut each 2–3 mm oversize lengthwise and slit it where leads rise.
-- **Other:** heat-shrink, Kapton tape, rosin flux, an 80 W+ iron with a big chisel tip, and a little glue for the 6 nut plugs.
+The full bill of materials, as a printable checklist, is in **[BOM.md](BOM.md)** ([printable web page](https://poynting.github.io/bat706/bom.html)): printed parts, fasteners (also listed per part), foam, electrical parts and tools.
+
+In short: 12 × M3×10 countersunk (ISO 10642), 4 × M3×5 button head (ISO 7380), 6 × M3 nuts (ISO 4032), 6 × M3 heat-set inserts (4.2 mm hole), 3 Powerpole pairs, a 30 A ATM fuse and holder, 12 AWG and 22 AWG silicone wire, and closed-cell foam.
 
 ## Build order
 
@@ -206,6 +198,7 @@ python cad/lid_drawing.py       # lid underside routing drawing (png + pdf, for 
 python schematic/schematic.py   # schematic.svg/.png
 python schematic/layout.py      # layout.png
 python viewer/build_viewer.py   # viewer/index.html (published to GitHub Pages on push)
+python viewer/build_bom.py      # viewer/bom.html from BOM.md (CI also renders it on push)
 ```
 
 All dimensions live in `cad/case.py`. Coordinates: X across the cells (C1 at −X), Y along them (+Y = front, the Powerpole end), Z up from the base's bed face.

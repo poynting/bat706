@@ -21,6 +21,8 @@
   .btns button { padding:5px 8px; background:#262d35; color:var(--fg); border:1px solid var(--line); border-radius:5px; cursor:pointer; }
   .btns button:hover { border-color:var(--acc); }
   select { background:#262d35; color:var(--fg); border:1px solid var(--line); border-radius:5px; padding:3px; }
+  .dl { line-height:1.7; } .dl a { color:var(--acc); text-decoration:none; } .dl a:hover { text-decoration:underline; }
+  .dl span { color:var(--dim); font-size:11px; }
   #view { position:relative; }
   #hud { position:absolute; left:12px; bottom:10px; color:var(--dim); pointer-events:none; }
   #dims { position:absolute; right:12px; top:10px; background:#000a; padding:6px 10px; border-radius:6px; }
@@ -32,6 +34,17 @@
     <h1>bat706 battery case</h1>
     <div class="sub">4S LiFePO4 for IC-706MKII</div>
     <div class="title" id="vtitle"></div>
+
+    <div class="sec" id="downloads">Downloads</div>
+    <div class="dl">
+      <a data-stl="base.stl" download>base.stl</a> <span>×1</span><br>
+      <a data-stl="spacer.stl" download>spacer.stl</a> <span>×1</span><br>
+      <a data-stl="lid.stl" download>lid.stl</a> <span>×1</span><br>
+      <a data-stl="pp_clamp.stl" download>pp_clamp.stl</a> <span>×1</span><br>
+      <a data-stl="nut_plug_x6.stl" download>nut_plug_x6.stl</a> <span>×6</span><br>
+      <span>STLs are in print orientation, no supports. PETG or ASA.</span><br>
+      <a href="bom.html" target="_blank">Bill of materials (printable)</a>
+    </div>
 
     <div class="sec">Parts <span style="float:right"><a href="#" id="all" style="color:var(--dim)">all</a> · <a href="#" id="printed" style="color:var(--dim)">printed only</a></span></div>
     <div id="list"></div>
@@ -69,6 +82,9 @@ import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 
 const DATA = /*__DATA__*/null;
 const view = document.getElementById("view");
+// STL links: GitHub Pages serves them from stl/ next to this page; opened from the repo on disk, from cad/out/
+const STL_BASE = location.protocol === "file:" ? "../cad/out/" : "stl/";
+for (const a of document.querySelectorAll("a[data-stl]")) a.href = STL_BASE + a.dataset.stl;
 if (!DATA) {
   view.innerHTML = '<div style="padding:40px;font-size:16px;line-height:1.6">This is the <b>template</b> (no model data).<br>' +
     'Open <a style="color:#e0a040" href="index.html">index.html</a> instead, or rebuild it with ' +

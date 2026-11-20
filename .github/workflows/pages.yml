@@ -1,6 +1,8 @@
-# Publish the 3D viewer (viewer/index.html, self-contained) to GitHub Pages on every push to main.
-# The viewer is built locally (python viewer/build_viewer.py, see README "Regenerating") and committed;
-# CI only copies the committed file, so it never needs CadQuery.
+# Publish to GitHub Pages on every push to main:
+#   index.html  the 3D viewer (self-contained; built locally with viewer/build_viewer.py and committed)
+#   bom.html    BOM.md rendered here by viewer/build_bom.py, so it always matches BOM.md
+#   stl/*.stl   the printable parts from cad/out/ (downloads linked from both pages)
+# CI never needs CadQuery: the STLs and the viewer are built locally and committed.
 name: Publish viewer
 
 on:
@@ -25,10 +27,18 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Render BOM
+        run: |
+          pip install markdown==3.10.3
+          python viewer/build_bom.py
       - name: Stage site
         run: |
-          mkdir -p _site
-          cp viewer/index.html _site/index.html
+          mkdir -p _site/stl
+          cp viewer/index.html viewer/bom.html _site/
+          cp cad/out/base.stl cad/out/spacer.stl cad/out/lid.stl cad/out/pp_clamp.stl cad/out/nut_plug_x6.stl _site/stl/
           touch _site/.nojekyll
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
