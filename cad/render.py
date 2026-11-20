@@ -150,11 +150,14 @@ def leads():
     return [black, red, c1]
 
 
-if __name__ == "__main__":
-    base, spacer, lid = C.make_base(), C.make_spacer_installed(), C.make_lid_installed()
+BMS_CHECKS = ['BMS vs spacer', 'BMS vs lid', 'BMS vs base', 'plug vs lid', 'plug vs spacer', 'PP vs BMS', 'BMS screws vs spacer', 'BMS screw heads vs cells', 'black leads vs BMS', 'red lead vs balance plug']
+
+
+def run_checks(base, spacer, lid, clamp, with_bms=True):
+    """Collision checks + gap / fastener report against the module-level C (variants rebind R.C).
+    with_bms=False drops everything about the 60 x 120 board (for variants with another BMS)."""
     cells, tabs, bms, plug, pp, screws, clamp_screws, wire, nuts, clamp_nuts, links, plugs, pads, bms_screws = dummies()
-    clamp = C.make_pp_clamp_installed()
-    leads = leads()
+    leads_ = leads()
     vol = lambda a, b: a.intersect(b).val().Volume()
     checks = {
         "cells vs base": sum(vol(base, c) for c in cells + tabs),
@@ -193,12 +196,14 @@ if __name__ == "__main__":
         "clamp scr heads vs cells": sum(vol(h, c) for s, h in clamp_screws for c in cells),
         "valley wire vs lid": vol(wire, lid), "valley wire vs spacer": vol(wire, spacer), "valley wire vs base": vol(wire, base),
         "valley wire vs cells": sum(vol(wire, c) for c in cells),
-        "PP leads vs lid": sum(vol(l, lid) for l in leads), "PP leads vs cells": sum(vol(l, c) for l in leads for c in cells),
-        "PP leads vs clamp": sum(vol(l, clamp) for l in leads), "black leads vs BMS": vol(leads[0], bms) + vol(leads[2], bms),
-        "PP leads vs base": sum(vol(l, base) for l in leads), "black leads vs valley wire": vol(leads[0], wire) + vol(leads[2], wire),
-        "red lead vs balance plug": vol(leads[1], plug),
-        "PP leads vs PP": sum(vol(l, pp) for l in leads), "PP leads vs clamp screws": sum(vol(l, s) + vol(l, h) for l in leads for s, h in clamp_screws),
+        "PP leads vs lid": sum(vol(l, lid) for l in leads_), "PP leads vs cells": sum(vol(l, c) for l in leads_ for c in cells),
+        "PP leads vs clamp": sum(vol(l, clamp) for l in leads_), "black leads vs BMS": vol(leads_[0], bms) + vol(leads_[2], bms),
+        "PP leads vs base": sum(vol(l, base) for l in leads_), "black leads vs valley wire": vol(leads_[0], wire) + vol(leads_[2], wire),
+        "red lead vs balance plug": vol(leads_[1], plug),
+        "PP leads vs PP": sum(vol(l, pp) for l in leads_), "PP leads vs clamp screws": sum(vol(l, s) + vol(l, h) for l in leads_ for s, h in clamp_screws),
     }
+    if not with_bms:
+        checks = {k: v for k, v in checks.items() if k not in BMS_CHECKS}
     for k, v in checks.items():
         print(f"interference {k:20s}: {v:8.3f} mm^3")
     for sy, nm in ((1, "FRONT"), (-1, "BACK")):
@@ -207,14 +212,14 @@ if __name__ == "__main__":
         print(f"end foam {nm}: {bb.xlen:.0f} x {bb.ylen:.1f} x {bb.zlen:.1f} mm envelope, {f.val().Volume() / 1000:.1f} cm^3, "
               f"{len(f.solids().vals())} piece(s)")
     xr = C.red_return_x()
-    print(f"red lead forward run: x={xr:.2f}, {xr - 2 - (C.BMS_X0 + C.BMS_W - C.BMS_PAD_IN + 2.5):.2f} mm to the BMS corner pad, "
+    if with_bms: print(f"red lead forward run: x={xr:.2f}, {xr - 2 - (C.BMS_X0 + C.BMS_W - C.BMS_PAD_IN + 2.5):.2f} mm to the BMS corner pad, "
           f"{C.pp_clamp_boss_x()[0] - C.PP_BOSS_D / 2 - (xr + 2):.2f} mm to the clamp boss; lies on the BMS top edge "
           f"({C.BMS_X0 + C.BMS_W - (xr - 2):.1f} mm of its width over the board, y {C.SADDLE_YS[2] - C.RIB_T / 2:.1f}.."
           f"{C.BMS_Y1:.1f}) in the {C.H_BASE - C.Z_BMS_TOP:.1f} mm BMS->lid gap: contact, no clearance")
-    print(f"gaps: lid->BMS {bms.val().distance(lid.val()):.2f}  spacer->BMS {bms.val().distance(spacer.val()):.2f}  "
+    print((f"gaps: lid->BMS {bms.val().distance(lid.val()):.2f}  spacer->BMS {bms.val().distance(spacer.val()):.2f}  " if with_bms else "gaps: ") +
           f"spacer->C2 {cells[1].val().distance(spacer.val()):.2f}  lid->C1 {cells[0].val().distance(lid.val()):.2f}  "
           f"lid->C4 {cells[3].val().distance(lid.val()):.2f}  lid->spacer {spacer.val().distance(lid.val()):.2f}  "
-          f"red->lid {leads[1].val().distance(lid.val()):.2f}  red->BMS {leads[1].val().distance(bms.val()):.2f}  "
+          f"red->lid {leads_[1].val().distance(lid.val()):.2f}  " + (f"red->BMS {leads_[1].val().distance(bms.val()):.2f}  " if with_bms else "") +
           f"clamp->PP {clamp.val().distance(pp.val()):.2f}  clamp-head->C4 {min(h.val().distance(cells[3].val()) for s, h in clamp_screws):.2f}")
     # thread engagement: shank length through each nut / insert
     def engaged(shank, region):
@@ -233,13 +238,21 @@ if __name__ == "__main__":
         print(f"clamp screw x={bx:5.1f}: {engaged(s, bore):.1f} mm in insert bore, tip {C.PP_Z0 + C.PP_INSERT_DEPTH - tip:.1f} mm short of "
               f"bore bottom, {C.H_BASE + C.LID_T - tip:.1f} mm below lid top (hidden)")
 
-    for (x, y), (s, h) in zip(C.bms_hole_xy(), bms_screws):
+    for (x, y), (s, h) in zip(C.bms_hole_xy() if with_bms else [], bms_screws):
         tip = s.val().BoundingBox().zmax
         eng = tip - (C.Z_BMS_BOT + C.BMS_PCB_T)
         print(f"BMS screw ({x:5.1f},{y:6.1f}): {eng:.1f} of {C.BMS_THREAD_DEPTH} mm standoff thread, "
               f"head {min(h.val().distance(c.val()) for c in cells):.2f} mm off the nearest cell, "
               f"{C.Z_BMS_BOT - (C.bms_screw_head_z(x) + C.BMS_HEAD_K):.2f} mm of spacer between head and PCB")
     print(f"spacer crest over C2/C3: {C.Z_BMS_BOT - (C.Z_CELL_TOP + C.SEAT_GAP):.2f} mm")
+    return checks, (cells, tabs, bms, plug, pp, screws, clamp_screws, wire, nuts, clamp_nuts, links, plugs, pads, bms_screws), leads_
+
+
+if __name__ == "__main__":
+    base, spacer, lid = C.make_base(), C.make_spacer_installed(), C.make_lid_installed()
+    clamp = C.make_pp_clamp_installed()
+    _, (cells, tabs, bms, plug, pp, screws, clamp_screws, wire, nuts, clamp_nuts, links, plugs, pads, bms_screws), leads = \
+        run_checks(base, spacer, lid, clamp)
 
     # ---- previews
     fig = plt.figure(figsize=(14, 7), dpi=110)

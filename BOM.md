@@ -73,3 +73,27 @@ Cut the end blocks 2–3 mm oversize lengthwise, and slit them where leads rise.
 - Powerpole crimper
 - M3 hex keys or drivers for countersunk (2 mm) and button head (2 mm) screws
 - Multimeter
+
+## 6. Build options
+
+Sections 1–5 are for the main design (60 × 120 BMS). The two Daly options change only the items below; everything else is the same. See the [README](README.md#build-options).
+
+### Daly 20 A (same base, new lid)
+
+| Have | Change | Qty | Notes |
+|:---:|---|:---:|---|
+| ☐ | Daly 4S 12 V **20 A** LiFePO4 BMS, 34 × 59 × 9 mm, instead of the 60 × 120 BMS | 1 | the 15 A model is the same box but too small for 100 W TX |
+| ☐ | Print `cad/out_daly/lid_daly.stl` instead of the main lid | 1 | or glue `cad/out_daly/daly_caps_only.stl` into a printed lid |
+| ☐ | 1 mm double-sided foam tape under the BMS | about 32 × 57 mm | |
+| — | M3×5 button head screws | **not needed** | |
+
+### Daly 20 A, low profile
+
+| Have | Change | Qty | Notes |
+|:---:|---|:---:|---|
+| ☐ | Daly 4S 12 V **20 A** LiFePO4 BMS, 34 × 59 × 9 mm, instead of the 60 × 120 BMS | 1 | |
+| ☐ | Print `cad/out_daly_low/base.stl`, `cad/out_daly_low/lid.stl`, `cad/out_daly_low/pp_clamp.stl` and `cad/out_daly_low/nut_plug_x6.stl` instead of the main ones | 1 each (plugs ×6) | the spacer stays the main design's |
+| ☐ | 1 mm double-sided foam tape under the BMS | about 57 × 32 mm | |
+| ☐ | End foam blocks, front and back | about 139 × 9 × 23 and 139 × 8 × 23 mm | 4 mm lower than the main design's |
+| — | M3×5 button head screws | **not needed** | |
+

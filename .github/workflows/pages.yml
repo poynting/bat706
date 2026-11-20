@@ -1,7 +1,7 @@
 # Publish to GitHub Pages on every push to main:
 #   index.html  the 3D viewer (self-contained; built locally with viewer/build_viewer.py and committed)
 #   bom.html    BOM.md rendered here by viewer/build_bom.py, so it always matches BOM.md
-#   stl/*.stl   the printable parts from cad/out/ (downloads linked from both pages)
+#   stl/*.stl   the printable parts: cad/out/ -> stl/, cad/out_daly/ -> stl/daly/, cad/out_daly_low/ -> stl/daly_low/
 # CI never needs CadQuery: the STLs and the viewer are built locally and committed.
 name: Publish viewer
 
@@ -39,6 +39,9 @@ jobs:
           mkdir -p _site/stl
           cp viewer/index.html viewer/bom.html _site/
           cp cad/out/base.stl cad/out/spacer.stl cad/out/lid.stl cad/out/pp_clamp.stl cad/out/nut_plug_x6.stl _site/stl/
+          mkdir -p _site/stl/daly _site/stl/daly_low
+          cp cad/out_daly/*.stl _site/stl/daly/
+          cp cad/out_daly_low/*.stl _site/stl/daly_low/
           touch _site/.nojekyll
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3

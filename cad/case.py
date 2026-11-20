@@ -24,6 +24,26 @@ Run:  python case.py   -> STL + STEP into ./out
 import os
 import cadquery as cq
 
+# Variants rebuild this module with a few values changed: load_variant(name, H_BASE=..., ...) execs this file
+# with OVERRIDES set. A plain `import case` has none, so every value below is the published design's.
+OVERRIDES = globals().get("OVERRIDES", {})
+
+
+def _ov(key, default):
+    return OVERRIDES.get(key, default)
+
+
+def load_variant(name, **overrides):
+    """A separate copy of this module with the given values overridden (published `case` is untouched)."""
+    import importlib.util
+    spec = importlib.util.spec_from_file_location(name, os.path.abspath(__file__))
+    mod = importlib.util.module_from_spec(spec)
+    mod.OVERRIDES = overrides
+    spec.loader.exec_module(mod)
+    unknown = set(overrides) - set(vars(mod))
+    assert not unknown, f"unknown overrides: {unknown}"
+    return mod
+
 # ---------------------------------------------------------------- cells, BMS, Powerpoles (measured / datasheet)
 CELL_D = 33.5                                  # cell diameter (measured)
 CELL_L = 136.25                                # cell body length, excluding tabs (measured)
@@ -86,7 +106,7 @@ def to_print_spacer(s):                        # flat (BMS) face on the bed
 # than on top because the lid prints outer-face-down; same stiffness, same height cost.
 BMS_TOP_CLR = 1.0                              # BMS components -> ridge underside
 RIDGE_H = 3.0
-H_BASE = Z_BMS_TOP + BMS_TOP_CLR + RIDGE_H     # rim height == lid underside
+H_BASE = _ov("H_BASE", Z_BMS_TOP + BMS_TOP_CLR + RIDGE_H)   # rim height == lid underside
 RIB_T = 4.0                                  # rib / ridge thickness (Y)
 WIRE_CH = (4.5, 4.0)                           # wire channel through each rib over the C1/C2 and C3/C4
                                                # valleys: half-width beyond the valley line, height above seat
@@ -109,6 +129,7 @@ boss_xy = [(sx * (IN_W / 2 - BOSS_D / 2 + 1.5), Y_OFF + sy * (IN_L / 2 - BOSS_D 
 
 BMS_FROM_BACK = 3.0                            # BMS pushed to the BACK end of the spacer: its balance connector is on
                                                # the front edge, which keeps the front (Powerpole) end uncrowded
+LID_BMS_PADS = _ov("LID_BMS_PADS", True)       # lid corner pads pressing the 60 x 120 board (off for other BMSs)
 BMS_PAD_IN = 5.0                               # lid corner pads: centre this far in from the BMS edges = over the
                                                # standoffs (holes 50 x 110 on a 60 x 120 board)
 # BMS mounting: two boards on corner standoffs (heat-sink board toward the lid); the lower PCB is flat and
@@ -201,6 +222,7 @@ NUT_SETBACK = 2.0                              # material between the rib-end fa
 SIDE_CLEAR_DEPTH = 8.0                         # clearance bore in the rib-end block (screw tip room)
 PP_INSERT_DEPTH = 7.0                          # Powerpole boss: blind heat-set insert from below
 PP_CLAMP_T = 4.5                               # Powerpole clamp bar thickness (holds a 2.4 mm nut pocket)
+PP_CLAMP_CELL_RELIEF = _ov("PP_CLAMP_CELL_RELIEF", False)   # hollow the bar's underside to clear C4 (low lids)
 PP_CLAMP_W = 8.0                               # along Y
 PP_BOSS_D = 8.0
 PP_BOSS_OFF = 4.0                              # boss centre offset beyond the cradle wall
@@ -345,6 +367,8 @@ def make_pp_clamp_installed():
         bar = bar.cut(cq.Workplane("XY").circle(CSK_HOLE_D / 2).extrude(PP_CLAMP_T * 3, both=True)
                       .translate((bx, PP_CLAMP_Y, PP_Z0)))
         bar = bar.cut(csk((bx, PP_CLAMP_Y, PP_Z0 - PP_CLAMP_T), (0, 0, 1)))   # heads hidden under the bar
+    if PP_CLAMP_CELL_RELIEF:
+        bar = bar.cut(cells_cut())               # follows C4's curve with the seat gap; full thickness at the screws
     return bar
 
 
@@ -506,7 +530,7 @@ def make_lid_installed():
                         .translate((0, y, H_BASE - RIDGE_H)))
 
     # BMS: corner pads press it onto the spacer
-    for sx in (0, 1):
+    for sx in (0, 1) if LID_BMS_PADS else ():
         for sy in (0, 1):
             kx = BMS_X0 + BMS_PAD_IN + sx * (BMS_W - 2 * BMS_PAD_IN)
             ky = BMS_Y1 - BMS_PAD_IN - sy * (BMS_L - 2 * BMS_PAD_IN)

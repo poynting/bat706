@@ -2,28 +2,66 @@
 
 A portable 13.x V supply for an Icom IC-706MKII:
 - **Cells:** 4 × 3.2 V 15 Ah LiFePO4 laser-welded cylindrical cells in 4S (Ø33.5 × 136.25 mm, with 20 × 8 × 2 mm copper solder tabs).
-- **BMS:** a 3S–20S 30 A balancing BMS (60 × 120 × 10 mm).
+- **BMS:** a 3S–20S 30 A balancing BMS (60 × 120 × 10 mm), or a Daly 4S 20 A (34 × 59 × 9 mm): see [Build options](#build-options).
 - **Output:** an Anderson Powerpole pair.
 - **Rating:** **12.8 V nominal, 14.6 V full, 15 Ah, ~192 Wh.**
 
-The case is **143.8 W × 157.9 L × 54.5 H mm**, inside the radio's own 167 × 200 × 58 mm footprint. It's 3D-printed without supports.
+The case is **143.8 W × 157.9 L × 54.5 H mm** (50.2 mm high for the low-profile Daly option), inside the radio's own 167 × 200 × 58 mm footprint. It's 3D-printed without supports.
 
 ![Exploded assembly](cad/out/preview_assembly.png)
+
+## Build options
+
+Three ways to build it, all with the same cells, footprint, Powerpoles and lead routing through the lid. Pick one in the [3D viewer](https://poynting.github.io/bat706/); its Downloads list switches to that option's STLs.
+
+| | **60 × 120 BMS** (the main design) | **Daly 20 A** | **Daly 20 A, low profile** |
+|---|---|---|---|
+| BMS | 3S–20S 30 A, 60 × 120 × 10, two boards | Daly 4S 12 V 20 A LiFePO4, 34 × 59 × 9, potted, flying leads | same Daly |
+| Size | 143.8 × 157.9 × **54.5** mm | 143.8 × 157.9 × **54.5** mm | 143.8 × 157.9 × **50.2** mm |
+| BMS mounting | 4 × M3×5 through the spacer | 1 mm double-sided foam tape; 4 lid corner caps | 1 mm double-sided foam tape; the lid presses on it |
+| Print | `cad/out/`: base, spacer, lid, pp_clamp, nut_plug ×6 | as the main design, but `cad/out_daly/lid_daly.stl` for the lid | `cad/out_daly_low/`: base, lid, pp_clamp, nut_plug ×6; spacer from `cad/out/` |
+| Script | `cad/case.py` | `cad/variant_daly.py` | `cad/variant_daly_low.py` |
+
+The rest of this README describes the main design; the two Daly sections below cover what differs. Parts lists for each option are in [BOM.md](BOM.md#build-options).
+
+### Daly 20 A (same base, new lid)
+
+![Daly layout](cad/out_daly/layout_daly.png)
+
+- **Reuses the printed base, spacer, clamp and nut plugs.** Only the lid changes: the published lid plus 4 corner caps that press the board onto its tape (0.3 mm) and hold it in X and Y. Already printed the main lid? Print `cad/out_daly/daly_caps_only.stl` and glue the caps in instead (positions in `layout_daly.png`).
+- **Board:** lengthwise over C2/C3, label up, leads toward the **back**, balance socket on the **front** edge. The old BMS screw pockets in the spacer stay empty.
+- **Leads:** P− (black) runs over C4 to the black output lead, B− (blue) over C1 to the C1− lead, both behind the middle beam (32 mm further back than in the main design, so leave those leads longer). Trim the Daly's 130 mm leads to length. Tape the NTC to a cell.
+- **Current:** the 20 A model is the one to use. The 15 A model is the same box, but the IC-706MKII draws about 20 A at 100 W TX.
+- **Checks:** `python cad/variant_daly.py`: all collision checks zero except the intended cap preload.
+
+### Daly 20 A, low profile (4.3 mm lower)
+
+![Daly low-profile layout](cad/out_daly_low/layout.png)
+![Daly low-profile sections](cad/out_daly_low/cross_section.png)
+
+- **Board crosswise** between the middle and back lid beams, so no lid ridge passes over it: the lid's underside presses directly on the board (0.3 mm into the tape) and the rim drops from 52.5 to 48.2 mm. Label up, leads toward **C4**, balance socket toward **C1**. The middle beam's ridge stops the board's front edge; short lid walls at both ends hold it in X.
+- **Leads:** P− (black) goes straight out over C4 to the black output lead, at the same joint as the main design. B− (blue) leaves the same end, loops back over C4 (about 7 mm bend radius) and runs to C1 in the lane between the board and the back beam (1.6 mm either side), then to the C1− lead.
+- **Reprint:** base, lid, Powerpole clamp (its underside is hollowed to clear C4; full thickness at the screws) and the nut plugs (now 3.2 mm tall). The spacer is the main design's, unchanged.
+- **Tighter than the main design:** side screws pass 0.2 mm under the lid's lip, the clamp is 0.5 mm off C4, and the end foam blocks are about 23 mm tall instead of 27.
+- **Checks:** `python cad/variant_daly_low.py` re-runs the main design's full check suite at the new height (screws, nuts, cells, clamp, leads) plus the Daly's own: 72 checks, all zero. Fastener engagement is the same as the main design.
 
 ## 3D viewer
 
 **<https://poynting.github.io/bat706/>**
 
 It shows the printed parts with the dummy cells, BMS, Powerpoles, leads, screws, nuts and foam, so you can check fit as well as look at the parts. The viewer offers:
+- **Build option:** switch between the three [build options](#build-options); the link remembers the choice (`#Daly%20low`).
 - **Parts:** toggle each part, solo it, or show only the printed parts.
 - **Explode:** a slider that spreads the assembly apart.
 - **Section cut:** slice along X, Y or Z.
 - **Views:** iso, top, front, side and under.
 - **X-ray lid:** see inside with the lid on.
+- **Flip lid:** turn the lid (with the Powerpoles, clamp, leads and nuts it carries) underside-up, as it lies on the bench.
+- **Free rotate:** tumble freely in any direction (trackball) instead of keeping Z up.
 - **Live dimensions:** the size of whatever is visible.
-- **Downloads:** every printable STL, and the [printable BOM](https://poynting.github.io/bat706/bom.html).
+- **Downloads:** every printable STL for the selected option, and the [printable BOM](https://poynting.github.io/bat706/bom.html).
 
-The same page is in the repo as [`viewer/index.html`](viewer/index.html). It's self-contained, but it needs internet once to load three.js. GitHub Actions (`.github/workflows/pages.yml`) republishes it on every push to `main`, together with the STLs from `cad/out/` and a page rendered from `BOM.md`. CI only copies the viewer and STLs, so rebuild them locally before you push (see [Regenerating](#regenerating)).
+The same page is in the repo as [`viewer/index.html`](viewer/index.html). It's self-contained, but it needs internet once to load three.js. GitHub Actions (`.github/workflows/pages.yml`) republishes it on every push to `main`, together with the STLs from `cad/out/`, `cad/out_daly/` and `cad/out_daly_low/` and a page rendered from `BOM.md`. CI only copies the viewer and STLs, so rebuild them locally before you push (see [Regenerating](#regenerating)).
 
 ## Schematic
 
@@ -197,11 +235,13 @@ python cad/details.py           # fastener / cell-end / seam sections
 python cad/lid_drawing.py       # lid underside routing drawing (png + pdf, for markup)
 python schematic/schematic.py   # schematic.svg/.png
 python schematic/layout.py      # layout.png
-python viewer/build_viewer.py   # viewer/index.html (published to GitHub Pages on push)
+python cad/variant_daly.py      # Daly option: checks, cad/out_daly/
+python cad/variant_daly_low.py  # Daly low-profile option: full checks at its height, cad/out_daly_low/
+python viewer/build_viewer.py   # viewer/index.html, all three options (published to GitHub Pages on push)
 python viewer/build_bom.py      # viewer/bom.html from BOM.md (CI also renders it on push)
 ```
 
-All dimensions live in `cad/case.py`. Coordinates: X across the cells (C1 at −X), Y along them (+Y = front, the Powerpole end), Z up from the base's bed face.
+All dimensions live in `cad/case.py`. The variants build on it: `case.load_variant(name, H_BASE=..., ...)` re-runs it as a separate copy with a few values changed, so every derived dimension follows. Coordinates: X across the cells (C1 at −X), Y along them (+Y = front, the Powerpole end), Z up from the base's bed face.
 
 ## Notes
 
